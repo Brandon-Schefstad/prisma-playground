@@ -19,7 +19,6 @@ module.exports = {
 		})
 		res.json(result)
 	},
-
 	getAllTodosByUser: async (req: Request, res: Response) => {
 		const result = await prisma.todo.findMany({
 			where: {

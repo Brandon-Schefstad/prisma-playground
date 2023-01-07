@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import authRouter from './authRouter'
 import router from './router'
+const { protect } = require('./middleware/auth.js')
+
 const cors = require('cors')
 const prisma = new PrismaClient()
 const express = require('express')
@@ -15,7 +17,7 @@ async function main() {
 	app.get('/', (req: Request, res: Response) => {
 		res.json({ hello: 'world' })
 	})
-	app.use('/api', router)
+	app.use('/api', protect, router)
 	app.use('/auth', authRouter)
 
 	app.listen(2121, () => {

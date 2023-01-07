@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client'
 import { Router } from 'express'
+const prisma = new PrismaClient()
+
 const createController = require('./todos/create')
 const readController = require('./todos/read')
 
-const prisma = new PrismaClient()
 const router = Router()
 
 router.post('/postTodo', createController.postTodo)
