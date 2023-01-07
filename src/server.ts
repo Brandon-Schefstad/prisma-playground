@@ -1,4 +1,3 @@
-import { Request, Response } from 'express'
 import authRouter from './authRouter'
 import { prisma } from './db'
 // @ts-ignore
@@ -14,7 +13,7 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 async function main() {
-	app.get('/', (req: Request, res: Response) => {
+	app.get('/', (req, res) => {
 		res.json({ hello: 'world' })
 	})
 	app.use('/api', protect, router)
