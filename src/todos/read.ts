@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
+import { prisma } from '../db'
 
-const prisma = new PrismaClient()
 module.exports = {
 	getAllTodos: async (req: Request, res: Response) => {
 		const result = await prisma.todo.findMany({

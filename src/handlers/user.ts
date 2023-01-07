@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import prisma from '../db'
+import { prisma } from '../db'
 import { createJWT, hashPassword } from '../modules/auth'
 export const createNewUser = async (req: Request, res: Response) => {
 	const hash = await hashPassword(req.body.password)

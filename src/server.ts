@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import authRouter from './authRouter'
+import { prisma } from './db'
+// @ts-ignore
+import { protect } from './middleware/auth.js'
 import router from './router'
-const { protect } = require('./middleware/auth.js')
 
 const cors = require('cors')
-const prisma = new PrismaClient()
 const express = require('express')
 const app = express()
 require('dotenv').config({ path: './env' })

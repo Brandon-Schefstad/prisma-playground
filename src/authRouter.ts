@@ -1,11 +1,23 @@
 import { Router } from 'express'
 
 import { PrismaClient } from '@prisma/client'
-const { comparePasswords, createJWT } = require('./modules/auth')
+const { comparePasswords, createJWT, hashPassword } = require('./modules/auth')
 const prisma = new PrismaClient()
 const router = Router()
 
-router.post('/signup', async (req, res) => {})
+router.post('/signup', async (req, res) => {
+	const hash = await hashPassword(req.body.password)
+	const user = await prisma.user.create({
+		data: {
+			email: req.body.email,
+			password: hash,
+			username: req.body.username,
+		},
+	})
+
+	const token = createJWT(user)
+	res.json({ token })
+})
 router.post('/login', async (req, res) => {
 	const user = await prisma.user.findFirst({
 		where: { username: req.body.username },
@@ -20,8 +32,7 @@ router.post('/login', async (req, res) => {
 			return
 		}
 
-		const token = createJWT(user)
-		res.json({ token })
+		res.sendStatus(200)
 	}
 	// const result = await prisma.user.findFirst({
 	// 	where: {

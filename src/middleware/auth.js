@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 module.exports = {
 	protect: async (req, res, next) => {
 		const bearer = req.headers.authorization
@@ -9,10 +10,10 @@ module.exports = {
 		}
 
 		const [, token] = bearer.split(' ')
+
 		if (!token) {
-			console.log('here')
 			res.status(401)
-			res.send('Not authorized')
+			res.send('No Token')
 			return
 		}
 
@@ -25,7 +26,7 @@ module.exports = {
 		} catch (e) {
 			console.error(e)
 			res.status(401)
-			res.send('Not authorized')
+			res.send('JWT Invalid')
 			return
 		}
 	},

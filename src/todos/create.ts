@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
+import { prisma } from '../db'
 
-const prisma = new PrismaClient()
 module.exports = {
 	postTodo: async (req: Request, res: Response) => {
 		console.log(req.body)
@@ -10,7 +9,6 @@ module.exports = {
 			data: {
 				todo: todo,
 				finished: finished,
-				userId: req.body.userId,
 			},
 		})
 		res.json(result)

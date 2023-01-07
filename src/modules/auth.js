@@ -9,8 +9,8 @@ module.exports = {
 		return token
 	},
 
-	comparePasswords: (first, second) => {
-		return first === second
+	comparePasswords: (password, hash) => {
+		return bcrypt.compare(password, hash)
 	},
 
 	hashPassword: (password) => {
