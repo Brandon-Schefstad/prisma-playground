@@ -1,12 +1,13 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
+import authRouter from './authRouter'
 import router from './router'
 const cors = require('cors')
 const prisma = new PrismaClient()
 const express = require('express')
 const app = express()
 require('dotenv').config({ path: './env' })
-const bodyparser = require('body-parser')
+
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -15,6 +16,7 @@ async function main() {
 		res.json({ hello: 'world' })
 	})
 	app.use('/api', router)
+	app.use('/auth', authRouter)
 
 	app.listen(2121, () => {
 		console.log(`http://localhost:${2121}`)

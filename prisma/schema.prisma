@@ -24,4 +24,6 @@ model Todo {
   finished Boolean
   userId Int?
   user User? @relation(fields: [userId], references: [id])
+  deleted Boolean @default(false)
+  deletedAt String?
 }

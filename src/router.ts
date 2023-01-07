@@ -1,53 +1,66 @@
 import { PrismaClient } from '@prisma/client'
 import { Router } from 'express'
+const createController = require('./todos/create')
+const readController = require('./todos/read')
 
 const prisma = new PrismaClient()
 const router = Router()
 
-/**
- * Product
- */
-router.get('/todos', async (req, res) => {
-	const result = await prisma.todo.findMany()
-	res.json(result)
+router.post('/postTodo', createController.postTodo)
+
+router.get('/todos', readController.getAllTodos)
+router.get('/deletedTodos', readController.getAllDeletedTodos)
+router.get('/todos/:userId', readController.getAllTodosByUser)
+router.get('/todosCompleted/:userId', readController.getAllCompletedTodosByUser)
+router.put('/finishTodo', async (req, res) => {
+	const todo = await prisma.todo.findFirst({
+		where: {
+			id: parseInt(req.body.id),
+		},
+	})
+
+	if (todo) {
+		const result = await prisma.todo.update({
+			where: {
+				id: req.body.id,
+			},
+			data: {
+				finished: !todo.finished,
+			},
+		})
+		res.json({
+			todo: 'updated',
+			confirmation: result,
+		})
+	}
 })
-router.get('/todos/:userId', async (req, res) => {
-	const result = await prisma.todo.findMany({
+
+router.delete('/deleteAllTodo/', async (req, res) => {
+	await prisma.todo.deleteMany({})
+	res.sendStatus(200)
+})
+router.delete('/deleteTodo/:userId', async (req, res) => {
+	await prisma.todo.deleteMany({
 		where: {
 			userId: parseInt(req.params.userId),
 		},
 	})
-	res.json(result)
+	res.sendStatus(200)
 })
-router.post('/postUser', async (req, res) => {
-	console.log(req.body)
-	const result = await prisma.user.create({
+router.put('/deleteTodo/', async (req, res) => {
+	const result = await prisma.todo.update({
+		where: {
+			id: req.body.id,
+		},
 		data: {
-			email: req.body.email,
-			password: req.body.password,
-			username: req.body.username,
+			deletedAt: Date.now().toString(),
+			deleted: true,
 		},
 	})
-	res.json(result)
-})
-router.post('/postTodo', async (req, res) => {
-	console.log(req.body)
-	const { todo, finished } = req.body
-	const result = await prisma.todo.create({
-		data: {
-			todo: todo,
-			finished: finished,
-			userId: req.body.userId,
-		},
+	res.json({
+		todo: 'updated',
+		confirmation: result,
 	})
-	res.json(result)
-})
-router.delete('/deleteTodo', async (req, res) => {
-	await prisma.todo.deleteMany()
-	res.send(200)
 })
 
-router.get('/', (req, res) => {
-	res.json({ success: false })
-})
 export default router
